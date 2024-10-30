@@ -25,7 +25,7 @@ const data = [
   },
 ];
 
-const CountChart = () => {
+const CountChart = ({ metrics }) => {
   return (
     <div className="bg-white rounded-xl w-full h-full p-4">
       {/* TITLE */}
@@ -59,13 +59,25 @@ const CountChart = () => {
       <div className="flex justify-center gap-16">
         <div className="flex flex-col gap-1">
           <div className="w-5 h-5 bg-lamaSky rounded-full" />
-          <h1 className="font-bold">1,234</h1>
-          <h2 className="text-xs text-gray-300">Boys (55%)</h2>
+          <h1 className="font-bold">
+            {metrics?.student_metrics?.total_male_students}
+          </h1>
+          <h2 className="text-xs text-gray-300">{`Boys (${
+            (metrics?.student_metrics?.total_male_students /
+              metrics?.student_metrics?.total_students) *
+            100
+          }%)`}</h2>
         </div>
         <div className="flex flex-col gap-1">
           <div className="w-5 h-5 bg-lamaYellow rounded-full" />
-          <h1 className="font-bold">1,234</h1>
-          <h2 className="text-xs text-gray-300">Girls (45%)</h2>
+          <h1 className="font-bold">
+            {metrics?.student_metrics?.total_female_students}
+          </h1>
+          <h2 className="text-xs text-gray-300">{`Girls (${
+            (metrics?.student_metrics?.total_female_students /
+              metrics?.student_metrics?.total_students) *
+            100
+          }%)`}</h2>
         </div>
       </div>
     </div>

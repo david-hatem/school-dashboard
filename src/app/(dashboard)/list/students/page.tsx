@@ -199,7 +199,6 @@ const StudentListPage = () => {
               //   <Image src="/plus.png" alt="" width={14} height={14} />
               // </button>
               <FormModal table="student" type="create" />
-              
             )}
           </div>
         </div>

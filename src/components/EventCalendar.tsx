@@ -6,6 +6,8 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import { formatTo12HourTime } from "@/lib/utils";
+import FormModal from "./FormModal";
+import { role } from "@/lib/data";
 
 type ValuePiece = Date | null;
 
@@ -89,7 +91,19 @@ const EventCalendar = () => {
       <Calendar onChange={onChange} value={value} />
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold my-4">Events</h1>
-        <Image src="/moreDark.png" alt="" width={20} height={20} />
+        {/* <Image
+          src="/create.png"
+          alt=""
+          width={20}
+          height={20}
+          className="cursor-pointer"
+        /> */}
+        {role === "admin" && (
+          // <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+          //   <Image src="/plus.png" alt="" width={14} height={14} />
+          // </button>
+          <FormModal table="event" type="create" />
+        )}
       </div>
       <div className="flex flex-col gap-4">
         {events.map((event) => (
@@ -100,7 +114,9 @@ const EventCalendar = () => {
             <div className="flex items-center justify-between">
               <h1 className="font-semibold text-gray-600">{event.title}</h1>
               <span className="text-gray-300 text-xs">
-                {`${formatTo12HourTime(event.start_time)} - ${formatTo12HourTime(event.end_time)}`}
+                {`${formatTo12HourTime(
+                  event.start_time
+                )} - ${formatTo12HourTime(event.end_time)}`}
               </span>
             </div>
             <p className="mt-2 text-gray-400 text-sm">{event.description}</p>
