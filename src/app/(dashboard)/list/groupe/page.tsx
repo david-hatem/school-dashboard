@@ -8,6 +8,7 @@ import TableSearch from "@/components/TableSearch";
 import { lessonsData, role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 
 export interface Professeur {
   id: number;
@@ -168,11 +169,28 @@ const GroupeListPage = () => {
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          {role === "admin" && (
+          {/* {role === "admin" && (
             // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
             //   <Image src="/delete.png" alt="" width={16} height={16} />
             // </button>
             <FormModal table="teacher" type="delete" id={item.id} />
+          )} */}
+          {role === "admin" && (
+            <button
+              onClick={async () => {
+                await axios.delete(
+                  `http://167.114.0.177:81/groupes/delete/${item?.id}/`,
+                  {
+                    headers: {
+                      "Content-Type": "application/json", // Define content type as JSON
+                    },
+                  }
+                );
+              }}
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple"
+            >
+              <Image src="/delete.png" alt="" width={16} height={16} />
+            </button>
           )}
         </div>
       </td>
