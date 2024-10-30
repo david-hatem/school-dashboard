@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  /* Background color for splash screen */
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  /* Spacing between logo and text */
+  animation: fadeIn 2s ease-out;
+}
+
+.logo {
+  width: 150px;
+  /* Adjust size of logo */
+  height: auto;
+  animation: logoBounce 1.5s ease-in-out infinite;
+}
+
+.text {
+  font-size: 48px;
+  font-weight: bold;
+  color: #333;
+  opacity: 0;
+  animation: fadeInText 1s ease-in forwards;
+  animation-delay: 1s;
+  /* Text appears after a delay */
+}
+
+/* Bounce animation for logo */
+@keyframes logoBounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Fade in animation for text */
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* General fade in for logo container */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
