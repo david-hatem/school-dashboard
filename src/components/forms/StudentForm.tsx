@@ -9,6 +9,7 @@ import Image from "next/image";
 import axios from "axios";
 import { Groupe } from "@/app/(dashboard)/list/groupe/page";
 import { group } from "console";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
 
 const schema = z.object({
   // username: z
@@ -31,7 +32,10 @@ const schema = z.object({
   sex: z.enum(["M", "F"], { message: "Sex is required!" }),
   group: z.string().min(1, { message: "Group is required!" }),
   // bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  // birthday: z.date({ message: "Birthday is required!" }),
+  birthday: z.preprocess(
+    (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+    z.date()
+  ),
   // img: z.instanceof(File, { message: "Image is required" }),
 });
 
@@ -58,7 +62,7 @@ const StudentForm = ({
       {
         prenom: data?.firstName,
         nom: data?.lastName,
-        date_naissance: "2003-01-01",
+        date_naissance: formatDateToYYYYMMDD(data?.birthday),
         telephone: data?.phone,
         adresse: data?.address,
         sexe: data?.sex,
@@ -114,7 +118,9 @@ const StudentForm = ({
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">{type === "create" ? "Create a new student" : "Update student"}</h1>
+      <h1 className="text-xl font-semibold">
+        {type === "create" ? "Create a new student" : "Update student"}
+      </h1>
       {/* <span className="text-xs text-gray-400 font-medium">
         Authentication Information
       </span>
@@ -264,14 +270,14 @@ const StudentForm = ({
           register={register}
           error={errors.nationalite}
         />
-        {/* <InputField
+        <InputField
           label="Birthday"
           name="birthday"
           defaultValue={data?.birthday}
           register={register}
           error={errors.birthday}
           type="date"
-        /> */}
+        />
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Sex</label>
           <select

@@ -28,6 +28,9 @@ const NiveauxForm = dynamic(() => import("./forms/NiveauxForm"), {
 const EventsForm = dynamic(() => import("./forms/EventsForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const GroupForm = dynamic(() => import("./forms/GroupForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
@@ -38,6 +41,7 @@ const forms: {
   filiere: (type, data) => <FiliereForm type={type} data={data} />,
   niveaux: (type, data) => <NiveauxForm type={type} data={data} />,
   event: (type, data) => <EventsForm type={type} data={data} />,
+  group: (type, data) => <GroupForm type={type} data={data} />,
 };
 
 const FormModal = ({
@@ -52,6 +56,8 @@ const FormModal = ({
     | "matiere"
     | "filiere"
     | "niveaux"
+    | "event"
+    | "group"
     | "class"
     | "lesson"
     | "exam"

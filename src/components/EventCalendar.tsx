@@ -120,7 +120,23 @@ const EventCalendar = () => {
               </span>
             </div>
             <p className="mt-2 text-gray-400 text-sm">{event.description}</p>
-            <div className="flex items-center justify-end w-full">
+            <div className="flex items-center justify-end w-full gap-2">
+              {/* <button
+                onClick={async () => {
+                  await axios.delete(
+                    `http://167.114.0.177:81/events/delete/${event?.id}/`,
+                    {
+                      headers: {
+                        "Content-Type": "application/json", // Define content type as JSON
+                      },
+                    }
+                  );
+                }}
+                className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple"
+              >
+                <Image src="/update.png" alt="" width={16} height={16} />
+              </button> */}
+          <FormModal table="event" type="update" />
               <button
                 onClick={async () => {
                   await axios.delete(

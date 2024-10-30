@@ -6,6 +6,7 @@ import { z } from "zod";
 import InputField from "../InputField";
 import Image from "next/image";
 import axios from "axios";
+import { formatDateToYYYYMMDD } from "@/lib/utils";
 
 const schema = z.object({
   // username: z
@@ -35,6 +36,10 @@ const schema = z.object({
   address: z.string().min(1, { message: "Address is required!" }),
   nationalite: z.string().min(1, { message: "Nationalite is required!" }),
   sex: z.enum(["M", "F"], { message: "Sex is required!" }),
+  birthday: z.preprocess(
+    (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+    z.date()
+  ),
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -66,6 +71,7 @@ const TeacherForm = ({
         nationalite: data?.nationalite,
         specialite: data?.specialite,
         contact_urgence: data?.contact_urgence,
+        date_naissance: formatDateToYYYYMMDD(data?.birthday),
       },
       {
         headers: {
@@ -78,7 +84,9 @@ const TeacherForm = ({
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">{type === "create" ? "Create a new teacher" : "Update teacher"}</h1>
+      <h1 className="text-xl font-semibold">
+        {type === "create" ? "Create a new teacher" : "Update teacher"}
+      </h1>
       {/* <span className="text-xs text-gray-400 font-medium">
         Authentication Information
       </span>
@@ -159,14 +167,14 @@ const TeacherForm = ({
           register={register}
           error={errors.nationalite}
         />
-        {/* <InputField
+        <InputField
           label="Birthday"
           name="birthday"
           defaultValue={data?.birthday}
           register={register}
           error={errors.birthday}
           type="date"
-        /> */}
+        />
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Sex</label>
           <select

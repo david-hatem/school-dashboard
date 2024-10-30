@@ -63,9 +63,9 @@ const CountChart = ({ metrics }) => {
             {metrics?.student_metrics?.total_male_students}
           </h1>
           <h2 className="text-xs text-gray-300">{`Boys (${
-            (metrics?.student_metrics?.total_male_students /
+            ((metrics?.student_metrics?.total_male_students /
               metrics?.student_metrics?.total_students) *
-            100
+            100).toFixed(2)
           }%)`}</h2>
         </div>
         <div className="flex flex-col gap-1">
@@ -74,9 +74,9 @@ const CountChart = ({ metrics }) => {
             {metrics?.student_metrics?.total_female_students}
           </h1>
           <h2 className="text-xs text-gray-300">{`Girls (${
-            (metrics?.student_metrics?.total_female_students /
+            ((metrics?.student_metrics?.total_female_students /
               metrics?.student_metrics?.total_students) *
-            100
+            100).toFixed(2)
           }%)`}</h2>
         </div>
       </div>
