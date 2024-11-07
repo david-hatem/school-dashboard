@@ -52,6 +52,16 @@ const columns = [
     key: "commission_percentage",
     render: (commission_percentage: number) => `${commission_percentage}%`,
   },
+  {
+    header: "Etudiant",
+    dataIndex: "etudiant",
+    key: "etudiant",
+  },
+  {
+    header: "Groupe",
+    dataIndex: "groupe",
+    key: "groupe",
+  },
 ];
 
 const ExamListPage = () => {
@@ -81,6 +91,10 @@ const ExamListPage = () => {
       <td className="hidden md:table-cell">{item.date_paiement}</td>
       <td className="hidden md:table-cell">{item.statut_paiement}</td>
       <td className="hidden md:table-cell">{item.commission_percentage}</td>
+      <td className="hidden md:table-cell">
+        {item.etudiant.prenom} {item.etudiant.nom}
+      </td>
+      <td className="hidden md:table-cell">{item.groupe.nom_groupe}</td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" ||

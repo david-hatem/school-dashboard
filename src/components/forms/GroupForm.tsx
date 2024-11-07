@@ -15,6 +15,22 @@ import {
 } from "@/app/(dashboard)/list/groupe/page";
 import { group } from "console";
 import { Niveau } from "@/app/(dashboard)/list/niveau/page";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Chip from "@mui/material/Chip";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import MenuItem from "@mui/material/MenuItem";
+import { Theme, useTheme } from "@mui/material/styles";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const schema = z.object({
   nom_groupe: z.string().min(1, { message: "Nom Group is required!" }),
@@ -22,7 +38,14 @@ const schema = z.object({
   professeur: z.string().min(1, { message: "Professeur is required!" }),
   niveau: z.string().min(1, { message: "Niveau is required!" }),
   filiere: z.string().min(1, { message: "Filiere is required!" }),
-  matiere: z.string().min(1, { message: "Matiere is required!" }),
+  // matiere: z.string().min(1, { message: "Matiere is required!" }),
+  matiere: z.array(
+    z.object({
+      id: z.string(),
+    })
+  ),
+  // .nonempty("Please select at least one subject."),
+
   // start_time: z.date({ message: "Start Time is required!" }),
   // end_time: z.date({ message: "End Time is required!" }),
   // start_time: z.preprocess(
@@ -53,6 +76,25 @@ const GroupForm = ({
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
   });
+
+  const theme = useTheme();
+  const [selectedMatieres, setSelectedMatieres] = useState<
+    { id: number }[]
+  >([]);
+
+  const handleChange = (event: SelectChangeEvent<number[]>) => {
+    const {
+      target: { value },
+    } = event;
+
+    // Map selected IDs to full objects with id and nom_matiere
+    const selectedItems = typeof value === 'string' ? [] : value.map((id) => {
+      const matiere = data?.matiere.find((m) => m.id === id);
+      return matiere ? matiere : null;
+    }).filter(Boolean) as { id: number }[];
+
+    setSelectedMatieres(selectedItems);
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await axios.post(
@@ -202,7 +244,7 @@ const GroupForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        {/* <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Matiere</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -218,7 +260,40 @@ const GroupForm = ({
               {errors.matiere.message.toString()}
             </p>
           )}
-        </div>
+        </div> */}
+        <Select
+          labelId="demo-multiple-chip-label"
+          id="demo-multiple-chip"
+          multiple
+          value={selectedMatieres.map((item) => item.id)}
+          onChange={handleChange}
+          input={<OutlinedInput id="select-multiple-chip" label="Matieres" />}
+          renderValue={(selected) => (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((value) => {
+                const mat = matiere.find((m) => m.id === value);
+                return mat ? (
+                  <Chip key={value} label={mat.nom_matiere} />
+                ) : null;
+              })}
+            </div>
+          )}
+          MenuProps={MenuProps}
+        >
+          {matiere.map((m) => (
+            <MenuItem
+              key={m.id}
+              value={m.id}
+              style={{
+                fontWeight: selectedMatieres.includes(m.id)
+                  ? theme.typography.fontWeightMedium
+                  : theme.typography.fontWeightRegular,
+              }}
+            >
+              {m.nom_matiere}
+            </MenuItem>
+          ))}
+        </Select>
       </div>
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Create" : "Update"}
