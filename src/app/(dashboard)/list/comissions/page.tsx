@@ -74,6 +74,21 @@ const columns = [
     dataIndex: "statut_comission",
     key: "statut_comission",
   },
+  {
+    header: "Etudiant",
+    dataIndex: "etudiant",
+    key: "etudiant",
+  },
+  {
+    header: "Groupe",
+    dataIndex: "groupe",
+    key: "groupe",
+  },
+  {
+    header: "Professeur",
+    dataIndex: "professeur",
+    key: "professeur",
+  },
   // {
   //   header: "Professeur",
   //   dataIndex: ["professeur", "nom"],
@@ -120,6 +135,13 @@ const AssignmentListPage = () => {
       <td className="hidden md:table-cell py-5">{item.montant}</td>
       <td className="hidden md:table-cell">{item.date_comission}</td>
       <td className="hidden md:table-cell">{item.statut_comission}</td>
+      <td className="hidden md:table-cell">
+        {item.etudiant.prenom} {item.etudiant.nom}
+      </td>
+      <td className="hidden md:table-cell">{item.groupe.nom_groupe}</td>
+      <td className="hidden md:table-cell">
+        {item.professeur.prenom} {item.professeur.nom}
+      </td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" ||
@@ -139,7 +161,7 @@ const AssignmentListPage = () => {
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">
-          All Assignments
+          All Commissions
         </h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
