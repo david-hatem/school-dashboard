@@ -11,6 +11,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const data = [
   {
@@ -75,7 +77,47 @@ const data = [
   },
 ];
 
+export interface DailyMetric {
+  name: string;
+  depenses: number;
+  "sorties-banque": number;
+  recettes: number;
+}
+
+export interface MonthFinancialMetrics {
+  year: string;
+  data: DailyMetric[];
+}
+
+export async function fetchMonthFinancialMetrics(): Promise<MonthFinancialMetrics> {
+  try {
+    const response = await axios.get<MonthFinancialMetrics>(
+      "http://167.114.0.177:81/dashboard/financial-metrics",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching metrics:", error);
+    throw error;
+  }
+}
+
 const FinanceChart = () => {
+  const [data, setData] = useState<MonthFinancialMetrics | null>(null);
+
+  useEffect(() => {
+    const loadMetrics = async () => {
+      const res = await fetchMonthFinancialMetrics();
+      setData(res);
+      console.log("data", res);
+    };
+
+    loadMetrics();
+  }, []);
   return (
     <div className="bg-white rounded-xl w-full h-full p-4">
       <div className="flex justify-between items-center">
@@ -86,7 +128,7 @@ const FinanceChart = () => {
         <LineChart
           width={500}
           height={300}
-          data={data}
+          data={data?.data}
           margin={{
             top: 5,
             right: 30,
@@ -102,7 +144,12 @@ const FinanceChart = () => {
             tickLine={false}
             tickMargin={10}
           />
-          <YAxis axisLine={false} tick={{ fill: "#d1d5db" }} tickLine={false}  tickMargin={20}/>
+          <YAxis
+            axisLine={false}
+            tick={{ fill: "#d1d5db" }}
+            tickLine={false}
+            tickMargin={20}
+          />
           <Tooltip />
           <Legend
             align="center"
@@ -111,11 +158,22 @@ const FinanceChart = () => {
           />
           <Line
             type="monotone"
-            dataKey="income"
+            dataKey="depenses"
             stroke="#C3EBFA"
             strokeWidth={5}
           />
-          <Line type="monotone" dataKey="expense" stroke="#CFCEFF" strokeWidth={5}/>
+          <Line
+            type="monotone"
+            dataKey="sorties-banque"
+            stroke="#CFCEFF"
+            strokeWidth={5}
+          />
+          <Line
+            type="monotone"
+            dataKey="recettes"
+            stroke="#FAE27C"
+            strokeWidth={5}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>

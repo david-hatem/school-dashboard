@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import Image from "next/image";
 import {
   BarChart,
@@ -11,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useEffect, useState } from "react";
 
 const data = [
   {
@@ -40,7 +42,48 @@ const data = [
   },
 ];
 
+export interface DailyMetric {
+  name: string;
+  paiements: number;
+  commissions: number;
+}
+
+export interface WeeklyFinancialMetrics {
+  start_date: string;
+  end_date: string;
+  data: DailyMetric[];
+}
+
+export async function fetchWeeklyFinancialMetrics(): Promise<WeeklyFinancialMetrics> {
+  try {
+    const response = await axios.get<WeeklyFinancialMetrics>(
+      "http://167.114.0.177:81/dashboard/weekly-financial-metrics/",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching metrics:", error);
+    throw error;
+  }
+}
+
 const AttendanceChart = () => {
+  const [data, setData] = useState<WeeklyFinancialMetrics | null>(null);
+
+  useEffect(() => {
+    const loadMetrics = async () => {
+      const res = await fetchWeeklyFinancialMetrics();
+      setData(res);
+      console.log("data", res);
+    };
+
+    loadMetrics();
+  }, []);
+
   return (
     <div className="bg-white rounded-lg p-4 h-full">
       <div className="flex justify-between items-center">
@@ -48,7 +91,7 @@ const AttendanceChart = () => {
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       <ResponsiveContainer width="100%" height="90%">
-        <BarChart width={500} height={300} data={data} barSize={20}>
+        <BarChart width={500} height={300} data={data?.data} barSize={20}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
           <XAxis
             dataKey="name"
@@ -66,13 +109,13 @@ const AttendanceChart = () => {
             wrapperStyle={{ paddingTop: "20px", paddingBottom: "40px" }}
           />
           <Bar
-            dataKey="present"
+            dataKey="paiements"
             fill="#FAE27C"
             legendType="circle"
             radius={[10, 10, 0, 0]}
           />
           <Bar
-            dataKey="absent"
+            dataKey="commissions"
             fill="#C3EBFA"
             legendType="circle"
             radius={[10, 10, 0, 0]}

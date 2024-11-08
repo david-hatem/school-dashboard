@@ -35,11 +35,11 @@ const MenuProps = {
 const schema = z.object({
   nom_groupe: z.string().min(1, { message: "Nom Group is required!" }),
   max_etudiants: z.string().min(1, { message: "Max Etudiants is required!" }),
-  professeur: z.string().min(1, { message: "Professeur is required!" }),
+  professeurs: z.string().min(1, { message: "Professeur is required!" }),
   niveau: z.string().min(1, { message: "Niveau is required!" }),
   filiere: z.string().min(1, { message: "Filiere is required!" }),
   // matiere: z.string().min(1, { message: "Matiere is required!" }),
-  matiere: z.array(
+  matieres: z.array(
     z.object({
       id: z.string(),
     })
@@ -78,9 +78,14 @@ const GroupForm = ({
   });
 
   const theme = useTheme();
-  const [selectedMatieres, setSelectedMatieres] = useState<
-    { id: number }[]
-  >([]);
+  const [selectedMatieres, setSelectedMatieres] = useState<{ id: number }[]>(
+    []
+  );
+
+  const [niveau, setNiveau] = useState<Niveau[]>([]);
+  const [filiere, setFiliere] = useState<Filiere[]>([]);
+  const [matiere, setMatiere] = useState<Matiere[]>([]);
+  const [professeur, setProfesseur] = useState<Professeur[]>([]);
 
   const handleChange = (event: SelectChangeEvent<number[]>) => {
     const {
@@ -88,10 +93,15 @@ const GroupForm = ({
     } = event;
 
     // Map selected IDs to full objects with id and nom_matiere
-    const selectedItems = typeof value === 'string' ? [] : value.map((id) => {
-      const matiere = data?.matiere.find((m) => m.id === id);
-      return matiere ? matiere : null;
-    }).filter(Boolean) as { id: number }[];
+    const selectedItems =
+      typeof value === "string"
+        ? []
+        : (value
+            .map((id) => {
+              const mats = matiere.find((m) => m.id === id);
+              return mats ? mats : null;
+            })
+            .filter(Boolean) as { id: number }[]);
 
     setSelectedMatieres(selectedItems);
   };
@@ -102,10 +112,10 @@ const GroupForm = ({
       {
         nom_groupe: data?.nom_groupe,
         max_etudiants: data?.max_etudiants,
-        professeur: data?.professeur,
+        professeurs: data?.professeurs,
         niveau: data?.niveau,
         filiere: data?.filiere,
-        matiere: data?.matiere,
+        matieres: data?.matieres,
       },
       {
         headers: {
@@ -116,11 +126,6 @@ const GroupForm = ({
     // );
     console.log(data);
   });
-
-  const [niveau, setNiveau] = useState<Niveau[]>([]);
-  const [filiere, setFiliere] = useState<Filiere[]>([]);
-  const [matiere, setMatiere] = useState<Matiere[]>([]);
-  const [professeur, setProfesseur] = useState<Professeur[]>([]);
 
   useEffect(() => {
     const fetchNiveau = async () => {
@@ -210,7 +215,7 @@ const GroupForm = ({
           <label className="text-xs text-gray-500">Professeur</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("professeur")}
+            {...register("professeurs")}
             defaultValue={data?.professeur}
           >
             {professeur.map((p) => {
@@ -221,9 +226,9 @@ const GroupForm = ({
               );
             })}
           </select>
-          {errors.professeur?.message && (
+          {errors.professeurs?.message && (
             <p className="text-xs text-red-400">
-              {errors.professeur.message.toString()}
+              {errors.professeurs.message.toString()}
             </p>
           )}
         </div>
@@ -262,6 +267,7 @@ const GroupForm = ({
           )}
         </div> */}
         <Select
+          {...register("matieres")}
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple

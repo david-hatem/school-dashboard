@@ -9,38 +9,62 @@ import Link from "next/link";
 import { formatDateToMonthYear } from "./../../../../../lib/utils";
 
 // Interface for a group
-interface Groupe {
+// models/User.ts
+
+export interface Matiere {
+  id: number;
+  nom_matiere: string;
+}
+
+export interface Niveau {
+  id: number;
+  nom_niveau: string;
+}
+
+export interface Filiere {
+  id: number;
+  nom_filiere: string;
+}
+
+export interface Professeur {
+  id: number;
+  nom: string;
+  prenom: string;
+  commission_fixe: number;
+}
+
+export interface Groupe {
   id: number;
   nom_groupe: string;
-  matiere: string;
-  filiere: string;
-  niveau: string;
-  professeur: string;
+  niveau: Niveau;
+  filiere: Filiere;
+  matieres: Matiere[];
+  professeurs: Professeur[];
 }
 
-// Interface for a payment
-interface Paiement {
+export interface Paiement {
   id: number;
   montant: number;
-  date_paiement: string;
+  date_paiement: string; // ISO date string
   statut_paiement: string;
-  groupe: number;
-  commission_percentage: number;
+  groupe: string;
 }
 
-// Main interface for the student
 interface Student {
   id: number;
   nom: string;
   prenom: string;
-  date_naissance: string;
-  telephone: string | null;
-  adresse: string | null;
-  sexe: string | null;
+  date_naissance: string; // ISO date string
+  telephone: string;
+  adresse: string;
+  sexe: string;
   nationalite: string;
-  contact_urgence: string | null;
+  contact_urgence: string;
+  created_at: string; // ISO date string
   groupes: Groupe[];
   paiements: Paiement[];
+  total_paiements: number;
+  total_groupes: number;
 }
 
 const SingleStudentPage = ({ params }) => {
@@ -53,7 +77,7 @@ const SingleStudentPage = ({ params }) => {
   useEffect(() => {
     const fetchEtudiant = async () => {
       const response = await fetch(
-        `http://167.114.0.177:81/etudiant_list/?id=${params.id}`,
+        `http://167.114.0.177:81/etudiants/${params.id}/details/`,
         {
           method: "GET",
           headers: {
@@ -62,7 +86,7 @@ const SingleStudentPage = ({ params }) => {
         }
       );
       const data = await response.json();
-      setStudent(data[0]);
+      setStudent(data);
     };
 
     fetchEtudiant();
@@ -87,15 +111,15 @@ const SingleStudentPage = ({ params }) => {
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
               <h1 className="text-xl font-semibold">
-                {student.prenom} {student.nom}
+                {student?.prenom} {student?.nom}
               </h1>
-              <p className="text-sm text-gray-500">
+              {/* <p className="text-sm text-gray-500">
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              </p>
+              </p> */}
               <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/blood.png" alt="" width={14} height={14} />
-                  <span>A+</span>
+                  <span>{student?.nationalite}</span>
                 </div>
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/date.png" alt="" width={14} height={14} />
@@ -104,11 +128,11 @@ const SingleStudentPage = ({ params }) => {
                 </div>
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/mail.png" alt="" width={14} height={14} />
-                  <span>user@gmail.com</span>
+                  <span>{student?.adresse}</span>
                 </div>
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/phone.png" alt="" width={14} height={14} />
-                  <span>{student.telephone}</span>
+                  <span>{student?.telephone}</span>
                 </div>
               </div>
             </div>
@@ -125,8 +149,10 @@ const SingleStudentPage = ({ params }) => {
                 className="w-6 h-6"
               />
               <div className="">
-                <h1 className="text-xl font-semibold">90%</h1>
-                <span className="text-sm text-gray-400">Attendance</span>
+                <h1 className="text-xl font-semibold">
+                  {student?.total_groupes}
+                </h1>
+                <span className="text-sm text-gray-400">Groups</span>
               </div>
             </div>
             {/* CARD */}
@@ -139,12 +165,14 @@ const SingleStudentPage = ({ params }) => {
                 className="w-6 h-6"
               />
               <div className="">
-                <h1 className="text-xl font-semibold">6th</h1>
-                <span className="text-sm text-gray-400">Grade</span>
+                <h1 className="text-xl font-semibold">
+                  {student?.total_paiements}
+                </h1>
+                <span className="text-sm text-gray-400">Total Paiements</span>
               </div>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            {/* <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleLesson.png"
                 alt=""
@@ -156,9 +184,9 @@ const SingleStudentPage = ({ params }) => {
                 <h1 className="text-xl font-semibold">18</h1>
                 <span className="text-sm text-gray-400">Lessons</span>
               </div>
-            </div>
+            </div> */}
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            {/* <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleClass.png"
                 alt=""
@@ -170,7 +198,7 @@ const SingleStudentPage = ({ params }) => {
                 <h1 className="text-xl font-semibold">6A</h1>
                 <span className="text-sm text-gray-400">Class</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* BOTTOM */}
