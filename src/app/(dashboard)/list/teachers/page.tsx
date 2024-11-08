@@ -32,7 +32,6 @@ interface Professeur {
   sexe: string;
   nationalite: string;
   specialite: string;
-  comission_fixe: number;
 }
 
 const columns = [
@@ -75,12 +74,6 @@ const columns = [
     header: "Spécialité",
     dataIndex: "specialite",
     key: "specialite",
-  },
-  {
-    header: "Commission Fixe (MAD)",
-    dataIndex: "comission_fixe",
-    key: "comission_fixe",
-    render: (comission_fixe: number) => `${comission_fixe} MAD`,
   },
   {
     header: "Actions",
@@ -168,7 +161,6 @@ const TeacherListPage = () => {
       <td className="hidden md:table-cell">{item.sexe}</td>
       <td className="hidden md:table-cell">{item.nationalite}</td>
       <td className="hidden md:table-cell">{item.specialite}</td>
-      <td className="hidden md:table-cell">{item.comission_fixe}</td>
       <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>

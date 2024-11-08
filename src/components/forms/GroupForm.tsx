@@ -13,7 +13,6 @@ import {
   Matiere,
   Professeur,
 } from "@/app/(dashboard)/list/groupe/page";
-import { group } from "console";
 import { Niveau } from "@/app/(dashboard)/list/niveau/page";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
@@ -290,11 +289,11 @@ const GroupForm = ({
             <MenuItem
               key={m.id}
               value={m.id}
-              style={{
-                fontWeight: selectedMatieres.includes(m.id)
-                  ? theme.typography.fontWeightMedium
-                  : theme.typography.fontWeightRegular,
-              }}
+              // style={{
+              //   fontWeight: selectedMatieres.includes(m.id)
+              //     ? theme.typography.fontWeightMedium
+              //     : theme.typography.fontWeightRegular,
+              // }}
             >
               {m.nom_matiere}
             </MenuItem>
