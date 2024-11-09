@@ -35,18 +35,18 @@ const PaymentForm = dynamic(() => import("./forms/PaymentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
-const forms: {
-  [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
-} = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />,
-  matiere: (type, data) => <MatiereForm type={type} data={data} />,
-  filiere: (type, data) => <FiliereForm type={type} data={data} />,
-  niveaux: (type, data) => <NiveauxForm type={type} data={data} />,
-  event: (type, data) => <EventsForm type={type} data={data} />,
-  group: (type, data) => <GroupForm type={type} data={data} />,
-  payment: (type, data) => <PaymentForm type={type} data={data} />,
-};
+// const forms: {
+//   [key: string]: (type: "create" | "update", data?: any, id?:any) => JSX.Element;
+// } = {
+//   teacher: (type, data) => <TeacherForm type={type} data={data} id={id} />,
+//   student: (type, data) => <StudentForm type={type} data={data} />,
+//   matiere: (type, data) => <MatiereForm type={type} data={data} />,
+//   filiere: (type, data) => <FiliereForm type={type} data={data} />,
+//   niveaux: (type, data) => <NiveauxForm type={type} data={data} />,
+//   event: (type, data) => <EventsForm type={type} data={data} />,
+//   group: (type, data) => <GroupForm type={type} data={data} />,
+//   payment: (type, data) => <PaymentForm type={type} data={data} />,
+// };
 
 const FormModal = ({
   table,
@@ -85,6 +85,23 @@ const FormModal = ({
 
   const [open, setOpen] = useState(false);
 
+  const forms: {
+    [key: string]: (
+      type: "create" | "update",
+      data?: any,
+      id?: any
+    ) => JSX.Element;
+  } = {
+    teacher: (type, data) => <TeacherForm type={type} data={data} id={id} />,
+    student: (type, data) => <StudentForm type={type} data={data} id={id} />,
+    matiere: (type, data) => <MatiereForm type={type} data={data} />,
+    filiere: (type, data) => <FiliereForm type={type} data={data} />,
+    niveaux: (type, data) => <NiveauxForm type={type} data={data} />,
+    event: (type, data) => <EventsForm type={type} data={data} id={id}/>,
+    group: (type, data) => <GroupForm type={type} data={data} />,
+    payment: (type, data) => <PaymentForm type={type} data={data} />,
+  };
+
   const Form = () => {
     return type === "delete" && id ? (
       <form action="" className="p-4 flex flex-col gap-4">
@@ -110,7 +127,7 @@ const FormModal = ({
           Delete
         </button>
       </form>
-    ) : type === "create" || type === "update" ? (
+    ) : type === "create" || (type === "update" && id) ? (
       forms[table](type, data)
     ) : (
       "Form not found!"

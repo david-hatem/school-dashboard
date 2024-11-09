@@ -136,7 +136,12 @@ const EventCalendar = () => {
               >
                 <Image src="/update.png" alt="" width={16} height={16} />
               </button> */}
-          <FormModal table="event" type="update" />
+              <FormModal
+                table="event"
+                type="update"
+                id={event?.id}
+                data={event}
+              />
               <button
                 onClick={async () => {
                   await axios.delete(

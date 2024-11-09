@@ -32,9 +32,11 @@ type Inputs = z.infer<typeof schema>;
 const EventsForm = ({
   type,
   data,
+  id,
 }: {
   type: "create" | "update";
   data?: any;
+  id?: any;
 }) => {
   const {
     register,
@@ -45,22 +47,41 @@ const EventsForm = ({
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    const response = await axios.post(
-      "http://167.114.0.177:81/events/create/",
-      {
-        title: data?.title,
-        description: data?.description,
-        start_time: data?.start_time,
-        end_time: data?.end_time,
-        groupe: data?.group,
-        professeur: data?.professeur,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // Define content type as JSON
+    if (type === "create") {
+      const response = await axios.post(
+        "http://167.114.0.177:81/events/create/",
+        {
+          title: data?.title,
+          description: data?.description,
+          start_time: data?.start_time,
+          end_time: data?.end_time,
+          groupe: data?.group,
+          professeur: data?.professeur,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+    } else if (type == "update") {
+      const response = await axios.put(
+        `http://167.114.0.177:81/events/update/${id}`,
+        {
+          title: data?.title,
+          description: data?.description,
+          start_time: data?.start_time,
+          end_time: data?.end_time,
+          groupe: data?.group,
+          professeur: data?.professeur,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+    }
     // );
     console.log(data);
   });

@@ -44,9 +44,11 @@ type Inputs = z.infer<typeof schema>;
 const StudentForm = ({
   type,
   data,
+  id,
 }: {
   type: "create" | "update";
   data?: any;
+  id?: any;
 }) => {
   const {
     register,
@@ -57,25 +59,47 @@ const StudentForm = ({
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    const response = await axios.post(
-      "http://167.114.0.177:81/etudiants/create/",
-      {
-        prenom: data?.firstName,
-        nom: data?.lastName,
-        date_naissance: formatDateToYYYYMMDD(data?.birthday),
-        telephone: data?.phone,
-        adresse: data?.address,
-        sexe: data?.sex,
-        nationalite: data?.nationalite,
-        contact_urgence: data?.contact_urgence,
-        groupe_id: data?.group,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // Define content type as JSON
+    if (type === "create") {
+      const response = await axios.post(
+        "http://167.114.0.177:81/etudiants/create/",
+        {
+          prenom: data?.firstName,
+          nom: data?.lastName,
+          date_naissance: formatDateToYYYYMMDD(data?.birthday),
+          telephone: data?.phone,
+          adresse: data?.address,
+          sexe: data?.sex,
+          nationalite: data?.nationalite,
+          contact_urgence: data?.contact_urgence,
+          groupe_id: data?.group,
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+    } else if (type == "update") {
+      const response = await axios.put(
+        `http://167.114.0.177:81/etudiants/update/${id}`,
+        {
+          prenom: data?.firstName,
+          nom: data?.lastName,
+          date_naissance: formatDateToYYYYMMDD(data?.birthday),
+          telephone: data?.phone,
+          adresse: data?.address,
+          sexe: data?.sex,
+          nationalite: data?.nationalite,
+          contact_urgence: data?.contact_urgence,
+          groupe_id: data?.group,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+    }
     // const response = await fetch(
     //   "http://167.114.0.177:81/list_create_etudiant",
     //   {
@@ -96,7 +120,7 @@ const StudentForm = ({
     //     }),
     //   }
     // );
-    console.log(response);
+    // console.log(response);
   });
 
   const [groupe, setGroupe] = useState<Groupe[]>([]);
@@ -231,23 +255,23 @@ const StudentForm = ({
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.firstName}
+          defaultValue={data?.prenom}
           register={register}
-          error={errors.firstName}
+          error={errors.prenom}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.lastName}
+          defaultValue={data?.nom}
           register={register}
-          error={errors.lastName}
+          error={errors.nom}
         />
         <InputField
           label="Phone"
           name="phone"
-          defaultValue={data?.phone}
+          defaultValue={data?.telephone}
           register={register}
-          error={errors.phone}
+          error={errors.telephone}
         />
         <InputField
           label="Contact Urgence"
@@ -259,9 +283,9 @@ const StudentForm = ({
         <InputField
           label="Address"
           name="address"
-          defaultValue={data?.address}
+          defaultValue={data?.adresse}
           register={register}
-          error={errors.address}
+          error={errors.adresse}
         />
         <InputField
           label="Nationalite"
@@ -273,9 +297,9 @@ const StudentForm = ({
         <InputField
           label="Birthday"
           name="birthday"
-          defaultValue={data?.birthday}
+          defaultValue={data?.date_naissance}
           register={register}
-          error={errors.birthday}
+          error={errors.date_naissance}
           type="date"
         />
         <div className="flex flex-col gap-2 w-full md:w-1/4">

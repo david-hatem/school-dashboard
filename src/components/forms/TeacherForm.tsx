@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -47,9 +48,11 @@ type Inputs = z.infer<typeof schema>;
 const TeacherForm = ({
   type,
   data,
+  id
 }: {
   type: "create" | "update";
   data?: any;
+  id?: any;
 }) => {
   const {
     register,
@@ -59,27 +62,54 @@ const TeacherForm = ({
     resolver: zodResolver(schema),
   });
 
+
+  useEffect(() => {
+    console.log(id);
+  }, []);
+
   const onSubmit = handleSubmit(async (data) => {
-    const response = await axios.post(
-      "http://167.114.0.177:81/professeurs/create/",
-      {
-        nom: data?.firstName,
-        prenom: data?.lastName,
-        telephone: data?.phone,
-        adresse: data?.address,
-        sexe: data?.sex,
-        nationalite: data?.nationalite,
-        specialite: data?.specialite,
-        contact_urgence: data?.contact_urgence,
-        date_naissance: formatDateToYYYYMMDD(data?.birthday),
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // Define content type as JSON
+    if (type === "create") {
+      const response = await axios.post(
+        "http://167.114.0.177:81/professeurs/create/",
+        {
+          nom: data?.firstName,
+          prenom: data?.lastName,
+          telephone: data?.phone,
+          adresse: data?.address,
+          sexe: data?.sex,
+          nationalite: data?.nationalite,
+          specialite: data?.specialite,
+          contact_urgence: data?.contact_urgence,
+          date_naissance: formatDateToYYYYMMDD(data?.birthday),
         },
-      }
-    );
-    console.log(response);
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+    } else if (type == "update") {
+      const response = await axios.put(
+        `http://167.114.0.177:81/professeurs/update/${id}`,
+        {
+          nom: data?.firstName,
+          prenom: data?.lastName,
+          telephone: data?.phone,
+          adresse: data?.address,
+          sexe: data?.sex,
+          nationalite: data?.nationalite,
+          specialite: data?.specialite,
+          contact_urgence: data?.contact_urgence,
+          date_naissance: formatDateToYYYYMMDD(data?.birthday),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+    }
+    // console.log(response);
   });
 
   return (
@@ -121,16 +151,16 @@ const TeacherForm = ({
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.firstName}
+          defaultValue={data?.prenom}
           register={register}
-          error={errors.firstName}
+          error={errors.prenom}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.lastName}
+          defaultValue={data?.nom}
           register={register}
-          error={errors.lastName}
+          error={errors?.nom}
         />
         <InputField
           label="Specialite"
@@ -142,16 +172,16 @@ const TeacherForm = ({
         <InputField
           label="Phone"
           name="phone"
-          defaultValue={data?.phone}
+          defaultValue={data?.telephone}
           register={register}
-          error={errors.phone}
+          error={errors.telephone}
         />
         <InputField
           label="Address"
           name="address"
-          defaultValue={data?.address}
+          defaultValue={data?.adresse}
           register={register}
-          error={errors.address}
+          error={errors.adresse}
         />
         <InputField
           label="Contact Urgence"
@@ -170,9 +200,9 @@ const TeacherForm = ({
         <InputField
           label="Birthday"
           name="birthday"
-          defaultValue={data?.birthday}
+          defaultValue={data?.date_naissance}
           register={register}
-          error={errors.birthday}
+          error={errors.date_naissance}
           type="date"
         />
         <div className="flex flex-col gap-2 w-full md:w-1/4">

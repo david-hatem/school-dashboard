@@ -34,15 +34,15 @@ const MenuProps = {
 const schema = z.object({
   nom_groupe: z.string().min(1, { message: "Nom Group is required!" }),
   max_etudiants: z.string().min(1, { message: "Max Etudiants is required!" }),
-  professeurs: z.string().min(1, { message: "Professeur is required!" }),
+  // professeurs: z.string().min(1, { message: "Professeur is required!" }),
   niveau: z.string().min(1, { message: "Niveau is required!" }),
   filiere: z.string().min(1, { message: "Filiere is required!" }),
   // matiere: z.string().min(1, { message: "Matiere is required!" }),
-  matieres: z.array(
-    z.object({
-      id: z.string(),
-    })
-  ),
+  // matieres: z.array(
+  //   z.object({
+  //     id: z.string(),
+  //   })
+  // ),
   // .nonempty("Please select at least one subject."),
 
   // start_time: z.date({ message: "Start Time is required!" }),
@@ -80,6 +80,7 @@ const GroupForm = ({
   const [selectedMatieres, setSelectedMatieres] = useState<{ id: number }[]>(
     []
   );
+  const [selectedProf, setSelectedProf] = useState<{ id: number }[]>([]);
 
   const [niveau, setNiveau] = useState<Niveau[]>([]);
   const [filiere, setFiliere] = useState<Filiere[]>([]);
@@ -98,11 +99,31 @@ const GroupForm = ({
         : (value
             .map((id) => {
               const mats = matiere.find((m) => m.id === id);
-              return mats ? mats : null;
+              return { id: mats.id } ? { id: mats.id } : null;
             })
             .filter(Boolean) as { id: number }[]);
 
     setSelectedMatieres(selectedItems);
+    console.log(selectedItems);
+  };
+  const handleChangeProf = (event: SelectChangeEvent<number[]>) => {
+    const {
+      target: { value },
+    } = event;
+
+    // Map selected IDs to full objects with id and nom_matiere
+    const selectedItems =
+      typeof value === "string"
+        ? []
+        : (value
+            .map((id) => {
+              const profs = professeur.find((m) => m.id === id);
+              return { id: profs.id } ? { id: profs.id } : null;
+            })
+            .filter(Boolean) as { id: number }[]);
+
+    setSelectedProf(selectedItems);
+    console.log(selectedItems);
   };
 
   const onSubmit = handleSubmit(async (data) => {
@@ -111,10 +132,10 @@ const GroupForm = ({
       {
         nom_groupe: data?.nom_groupe,
         max_etudiants: data?.max_etudiants,
-        professeurs: data?.professeurs,
+        professeurs: selectedProf,
         niveau: data?.niveau,
         filiere: data?.filiere,
-        matieres: data?.matieres,
+        matieres: selectedMatieres,
       },
       {
         headers: {
@@ -231,6 +252,38 @@ const GroupForm = ({
             </p>
           )}
         </div>
+        <Select
+          // {...register("matieres")}
+          labelId="demo-multiple-chip-label"
+          id="demo-multiple-chip"
+          multiple
+          value={selectedProf.map((item) => item.id)}
+          onChange={handleChangeProf}
+          input={<OutlinedInput id="select-multiple-chip" label="Professeur" />}
+          renderValue={(selected) => (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((value) => {
+                const prof = professeur.find((m) => m.id === value);
+                return prof ? <Chip key={value} label={prof.prenom} /> : null;
+              })}
+            </div>
+          )}
+          MenuProps={MenuProps}
+        >
+          {professeur.map((m) => (
+            <MenuItem
+              key={m.id}
+              value={m.id}
+              // style={{
+              //   fontWeight: selectedMatieres.includes(m.id)
+              //     ? theme.typography.fontWeightMedium
+              //     : theme.typography.fontWeightRegular,
+              // }}
+            >
+              {m.prenom}
+            </MenuItem>
+          ))}
+        </Select>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Filiere</label>
           <select
@@ -266,7 +319,7 @@ const GroupForm = ({
           )}
         </div> */}
         <Select
-          {...register("matieres")}
+          // {...register("matieres")}
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
