@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
 
 const LoginPage = () => {
+  const cookies = new Cookies();
+
   // const { isLoaded, isSignedIn, user } = useUser();
 
   const [username, setUsername] = useState("");
@@ -42,9 +45,12 @@ const LoginPage = () => {
 
       const data = await response.json();
       const token = data["access"];
+      cookies.set("authToken", token, {
+        httpOnly: true,
+      });
 
       // Save token to local storage (or handle as needed)
-      localStorage.setItem("authToken", token);
+      // localStorage.setItem("authToken", token);
 
       // Redirect to the desired page
       router.push("/");

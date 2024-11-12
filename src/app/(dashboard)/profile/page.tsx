@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "@/components/InputField";
 import axios from "axios";
+import Cookies from "universal-cookie";
 
 const schema = z.object({
   old_password: z.string().min(1, { message: "Old password is required!" }),
@@ -38,10 +39,12 @@ const Profile = () => {
     resolver: zodResolver(schema),
   });
 
+  const cookies = new Cookies();
+
   const [profile, setProfile] = useState<User>({});
   let accessToken;
   useEffect(() => {
-    accessToken = localStorage.getItem("authToken");
+    accessToken = cookies.get("authToken");
     const fetchProfile = async () => {
       const response = await fetch(`http://167.114.0.177:81/staff/profile/`, {
         method: "GET",
@@ -66,7 +69,7 @@ const Profile = () => {
       },
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${cookies.get("authToken")}`,
           "Content-Type": "application/json", // Define content type as JSON
         },
       }
