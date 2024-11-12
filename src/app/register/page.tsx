@@ -8,7 +8,11 @@ const LoginPage = () => {
   // const { isLoaded, isSignedIn, user } = useUser();
 
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordCon, setPasswordCon] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -25,19 +29,23 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://167.114.0.177:81/token/", {
+      const response = await fetch("http://167.114.0.177:81/staff/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
-          password,
+          username: username,
+          password :password,
+          password2: passwordCon,
+          email: email,
+          first_name: firstName,
+          last_name: lastName,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to sign in. Check your credentials.");
+        throw new Error("Failed to register.");
       }
 
       const data = await response.json();
@@ -65,8 +73,32 @@ const LoginPage = () => {
           <Image src="/logo.png" alt="" width={24} height={24} />
           School
         </h1>
-        <h2 className="text-gray-400">Sign in to your account</h2>
+        <h2 className="text-gray-400">Register new staff</h2>
         {/* <Clerk.GlobalError className="text-sm text-red-400" /> */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs text-gray-500">First Name</label>
+          <input
+            type="text"
+            id="firstname"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+            className="p-2 rounded-md ring-1 ring-gray-300"
+          />
+          {/* <Clerk.FieldError className="text-xs text-red-400" /> */}
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs text-gray-500">Last Name</label>
+          <input
+            type="text"
+            id="lastname"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+            className="p-2 rounded-md ring-1 ring-gray-300"
+          />
+          {/* <Clerk.FieldError className="text-xs text-red-400" /> */}
+        </div>
         <div className="flex flex-col gap-2">
           <label className="text-xs text-gray-500">Username</label>
           <input
@@ -80,12 +112,36 @@ const LoginPage = () => {
           {/* <Clerk.FieldError className="text-xs text-red-400" /> */}
         </div>
         <div className="flex flex-col gap-2">
+          <label className="text-xs text-gray-500">Email</label>
+          <input
+            type="text"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="p-2 rounded-md ring-1 ring-gray-300"
+          />
+          {/* <Clerk.FieldError className="text-xs text-red-400" /> */}
+        </div>
+        <div className="flex flex-col gap-2">
           <label className="text-xs text-gray-500">Password</label>
           <input
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            className="p-2 rounded-md ring-1 ring-gray-300"
+          />
+          {/* <Clerk.FieldError className="text-xs text-red-400" /> */}
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs text-gray-500">Password Confirmation</label>
+          <input
+            type="password"
+            id="password-con"
+            value={passwordCon}
+            onChange={(e) => setPasswordCon(e.target.value)}
             required
             className="p-2 rounded-md ring-1 ring-gray-300"
           />
