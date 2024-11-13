@@ -51,6 +51,7 @@ const LoginPage = () => {
       // localStorage.setItem("authToken", token);
 
       // Redirect to the desired page
+      console.log(`cookies.get("authToken")`, cookies.get("authToken"));
       router.push("/");
     } catch (err) {
       setError(err.message);

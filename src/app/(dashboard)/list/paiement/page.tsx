@@ -7,6 +7,8 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { examsData, role } from "@/lib/data";
 import Image from "next/image";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 type Exam = {
   id: number;
@@ -65,6 +67,15 @@ const columns = [
 ];
 
 const ExamListPage = () => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   const [paiement, setPaiement] = useState<Paiement[]>([]);
 
   useEffect(() => {

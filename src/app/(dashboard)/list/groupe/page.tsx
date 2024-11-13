@@ -9,6 +9,8 @@ import { lessonsData, role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 export interface Professeur {
   id: number;
@@ -137,6 +139,15 @@ const columns = [
 // ];
 
 const GroupeListPage = () => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   const [groupe, setGroupe] = useState<Groupe[]>([]);
 
   useEffect(() => {

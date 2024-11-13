@@ -71,14 +71,14 @@ export async function fetchMetrics(): Promise<MetricsResponse> {
 }
 
 const AdminPage = () => {
-  const cookies = new Cookies();
+  const cookies = new Cookies(null, { path: '/' });
 
   let token = cookies.get("authToken");
   useEffect(() => {
     if (!token) {
       redirect("/sign-in");
     }
-    console.log(token);
+    console.log("token", token);
   }, []);
   const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
 

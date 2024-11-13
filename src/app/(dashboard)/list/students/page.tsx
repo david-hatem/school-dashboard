@@ -9,6 +9,8 @@ import { role, studentsData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 // type Student = {
 //   id: number;
@@ -105,6 +107,15 @@ const columns = [
 ];
 
 const StudentListPage = () => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   const [etudiants, setEtudiants] = useState<Etudiant[]>([]);
 
   useEffect(() => {

@@ -7,6 +7,8 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { assignmentsData, role } from "@/lib/data";
 import Image from "next/image";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 interface Professeur {
   id: number;
@@ -110,6 +112,15 @@ const columns = [
 ];
 
 const AssignmentListPage = () => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   const [comissions, setComissions] = useState<Comission[]>([]);
 
   useEffect(() => {

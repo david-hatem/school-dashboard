@@ -8,6 +8,8 @@ import TableSearch from "@/components/TableSearch";
 import { parentsData, role } from "@/lib/data";
 import Image from "next/image";
 import axios from "axios";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 export interface Matiere {
   id: number;
@@ -43,6 +45,18 @@ const columns = [
 ];
 
 const MatiereListPage = () => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
+  useEffect(() => {
+    console.log("params.id : ", params.id);
+  }, []);
   const [matiere, setMatiere] = useState<Matiere[]>([]);
 
   useEffect(() => {

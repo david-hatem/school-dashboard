@@ -8,6 +8,8 @@ import TableSearch from "@/components/TableSearch";
 import { classesData, role } from "@/lib/data";
 import Image from "next/image";
 import axios from "axios";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 export interface Niveau {
   id: number;

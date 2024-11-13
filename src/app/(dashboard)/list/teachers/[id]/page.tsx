@@ -9,7 +9,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatDateToMonthYear } from "./../../../../../lib/utils";
-
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 export interface Matiere {
   id: number;
   nom_matiere: string;
@@ -73,6 +74,15 @@ export interface Professor {
 }
 
 const SingleTeacherPage = ({ params }) => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   useEffect(() => {
     console.log("params.id : ", params.id);
   }, []);

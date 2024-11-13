@@ -106,7 +106,7 @@ const Menu = () => {
               return (
                 <Link
                   onClick={() => {
-                    if ((item.href = "/logout")) {
+                    if (item.href === "/logout") {
                       cookies.set("authToken", null);
                       redirect("/sign-in");
                     }

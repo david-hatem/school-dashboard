@@ -9,6 +9,8 @@ import Link from "next/link";
 import { formatDateToMonthYear } from "./../../../../../lib/utils";
 import { role } from "@/lib/data";
 import FormModal from "@/components/FormModal";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 // Interface for a group
 // models/User.ts
@@ -70,6 +72,15 @@ interface Student {
 }
 
 const SingleStudentPage = ({ params }) => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   useEffect(() => {
     console.log("params.id : ", params.id);
   }, []);
@@ -116,27 +127,27 @@ const SingleStudentPage = ({ params }) => {
                 {student?.prenom} {student?.nom}
               </h1>
               {role === "admin" && (
-                  <FormModal
-                    table="student"
-                    type="update"
-                    data={student}
-                    id={params.id}
-                    // {{
-                    //   id: 1,
-                    //   username: "deanguerrero",
-                    //   email: "deanguerrero@gmail.com",
-                    //   password: "password",
-                    //   firstName: "Dean",
-                    //   lastName: "Guerrero",
-                    //   phone: "+1 234 567 89",
-                    //   address: "1234 Main St, Anytown, USA",
-                    //   bloodType: "A+",
-                    //   dateOfBirth: "2000-01-01",
-                    //   sex: "male",
-                    //   img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200",
-                    // }}
-                  />
-                )}
+                <FormModal
+                  table="student"
+                  type="update"
+                  data={student}
+                  id={params.id}
+                  // {{
+                  //   id: 1,
+                  //   username: "deanguerrero",
+                  //   email: "deanguerrero@gmail.com",
+                  //   password: "password",
+                  //   firstName: "Dean",
+                  //   lastName: "Guerrero",
+                  //   phone: "+1 234 567 89",
+                  //   address: "1234 Main St, Anytown, USA",
+                  //   bloodType: "A+",
+                  //   dateOfBirth: "2000-01-01",
+                  //   sex: "male",
+                  //   img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                  // }}
+                />
+              )}
               {/* <p className="text-sm text-gray-500">
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
               </p> */}

@@ -9,6 +9,8 @@ import { role, teachersData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 type Teacher = {
   id: number;
@@ -118,6 +120,15 @@ const columns = [
 // ];
 
 const TeacherListPage = () => {
+  const cookies = new Cookies();
+
+  // let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!cookies.get("authToken")) {
+      redirect("/sign-in");
+    }
+    console.log(cookies.get("authToken"));
+  }, []);
   const [teachers, setTeachers] = useState<Professeur[]>([]);
 
   useEffect(() => {
