@@ -45,9 +45,7 @@ const LoginPage = () => {
 
       const data = await response.json();
       const token = data["access"];
-      cookies.set("authToken", token, {
-        httpOnly: true,
-      });
+      cookies.set("authToken", token);
 
       // Save token to local storage (or handle as needed)
       // localStorage.setItem("authToken", token);

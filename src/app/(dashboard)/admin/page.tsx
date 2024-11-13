@@ -7,6 +7,8 @@ import FinanceChart from "@/components/FinanceChart";
 import UserCard from "@/components/UserCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 export interface StudentMetrics {
   total_students: number;
@@ -69,6 +71,15 @@ export async function fetchMetrics(): Promise<MetricsResponse> {
 }
 
 const AdminPage = () => {
+  const cookies = new Cookies();
+
+  let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!token) {
+      redirect("/sign-in");
+    }
+    console.log(token);
+  }, []);
   const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
 
   useEffect(() => {

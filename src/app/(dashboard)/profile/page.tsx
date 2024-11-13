@@ -14,6 +14,7 @@ import { z } from "zod";
 import InputField from "@/components/InputField";
 import axios from "axios";
 import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 const schema = z.object({
   old_password: z.string().min(1, { message: "Old password is required!" }),
@@ -31,6 +32,16 @@ export interface User {
 }
 
 const Profile = () => {
+  const cookies = new Cookies();
+
+  let token = cookies.get("authToken");
+  useEffect(() => {
+    if (!token) {
+      redirect("/sign-in");
+    }
+    console.log(token);
+
+  }, []);
   const {
     register,
     handleSubmit,
@@ -38,8 +49,6 @@ const Profile = () => {
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
   });
-
-  const cookies = new Cookies();
 
   const [profile, setProfile] = useState<User>({});
   let accessToken;
@@ -78,7 +87,7 @@ const Profile = () => {
   });
 
   return (
-    <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
+    token &&<div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}
       <div className="w-full">
         {/* TOP */}
@@ -146,7 +155,7 @@ const Profile = () => {
         <div className="flex flex-col lg:flex-row gap-4">
           <form className="flex flex-col gap-8" onSubmit={onSubmit}>
             <h1 className="text-xl font-semibold">Change Password</h1>
-            <div className="w-full flex justify-between flex-wrap gap-4">
+            <div className="flex flex-col flex-wrap gap-4">
               <InputField
                 label="Old Password"
                 name="old_password"
@@ -163,10 +172,10 @@ const Profile = () => {
                 error={errors.new_password}
                 type="password"
               />
+              <button className="bg-blue-400 text-white p-2 rounded-md">
+                Change
+              </button>
             </div>
-            <button className="bg-blue-400 text-white p-2 rounded-md">
-              Change
-            </button>
           </form>
         </div>
       </div>
