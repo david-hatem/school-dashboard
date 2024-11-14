@@ -64,9 +64,11 @@ type Inputs = z.infer<typeof schema>;
 const GroupForm = ({
   type,
   data,
+  id
 }: {
   type: "create" | "update";
   data?: any;
+  id?: any;
 }) => {
   const {
     register,
@@ -127,6 +129,7 @@ const GroupForm = ({
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    if (type === "create") {
     const response = await axios.post(
       "http://167.114.0.177:81/groupes/create/",
       {
@@ -143,6 +146,24 @@ const GroupForm = ({
         },
       }
     );
+  }else if (type === "update") {
+    const response = await axios.put(
+      `http://167.114.0.177:81/groupes/update/${id}`,
+      {
+        nom_groupe: data?.nom_groupe,
+        max_etudiants: data?.max_etudiants,
+        professeurs: selectedProf,
+        niveau: data?.niveau,
+        filiere: data?.filiere,
+        matieres: selectedMatieres,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json", // Define content type as JSON
+        },
+      }
+    );
+  }
     // );
     console.log(data);
   });

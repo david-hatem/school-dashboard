@@ -114,12 +114,12 @@ const columns = [
 const AssignmentListPage = () => {
   const cookies = new Cookies();
 
-  // let token = cookies.get("authToken");
   useEffect(() => {
-    if (!cookies.get("authToken")) {
+    let token = cookies.get("authToken");
+    if (!token) {
       redirect("/sign-in");
     }
-    console.log(cookies.get("authToken"));
+    console.log("token", token);
   }, []);
   const [comissions, setComissions] = useState<Comission[]>([]);
 

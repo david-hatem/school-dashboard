@@ -98,7 +98,7 @@ const FormModal = ({
     filiere: (type, data) => <FiliereForm type={type} data={data} />,
     niveaux: (type, data) => <NiveauxForm type={type} data={data} />,
     event: (type, data) => <EventsForm type={type} data={data} id={id}/>,
-    group: (type, data) => <GroupForm type={type} data={data} />,
+    group: (type, data) => <GroupForm type={type} data={data} id={id} />,
     payment: (type, data) => <PaymentForm type={type} data={data} />,
   };
 

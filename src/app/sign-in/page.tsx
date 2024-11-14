@@ -45,7 +45,10 @@ const LoginPage = () => {
 
       const data = await response.json();
       const token = data["access"];
-      cookies.set("authToken", token);
+      cookies.set("authToken", token, {
+        maxAge: 5 * 60,
+        secure: true,
+      });
 
       // Save token to local storage (or handle as needed)
       // localStorage.setItem("authToken", token);

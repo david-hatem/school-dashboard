@@ -122,12 +122,13 @@ const columns = [
 const TeacherListPage = () => {
   const cookies = new Cookies();
 
-  // let token = cookies.get("authToken");
   useEffect(() => {
-    if (!cookies.get("authToken")) {
+    let token;
+    token = cookies.get("authToken");
+    if (!token) {
       redirect("/sign-in");
     }
-    console.log(cookies.get("authToken"));
+    console.log("token", token);
   }, []);
   const [teachers, setTeachers] = useState<Professeur[]>([]);
 

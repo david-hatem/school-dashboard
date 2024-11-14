@@ -45,6 +45,15 @@ const columns = [
 ];
 
 const NiveauListPage = () => {
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    let token = cookies.get("authToken");
+    if (!token) {
+      redirect("/sign-in");
+    }
+    console.log("token", token);
+  }, []);
   const [niveau, setNiveau] = useState<Niveau[]>([]);
 
   useEffect(() => {

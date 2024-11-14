@@ -141,12 +141,12 @@ const columns = [
 const GroupeListPage = () => {
   const cookies = new Cookies();
 
-  // let token = cookies.get("authToken");
   useEffect(() => {
-    if (!cookies.get("authToken")) {
+    let token = cookies.get("authToken");
+    if (!token) {
       redirect("/sign-in");
     }
-    console.log(cookies.get("authToken"));
+    console.log("token", token);
   }, []);
   const [groupe, setGroupe] = useState<Groupe[]>([]);
 
@@ -175,11 +175,9 @@ const GroupeListPage = () => {
       <td className="hidden md:table-cell">{item.max_etudiants}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
+          {role === "admin" && (
+            <FormModal table="group" type="update" data={item} id={item.id} />
+          )}
           {/* {role === "admin" && (
             // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
             //   <Image src="/delete.png" alt="" width={16} height={16} />

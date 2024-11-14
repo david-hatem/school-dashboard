@@ -7,6 +7,8 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { role, subjectsData } from "@/lib/data";
 import Image from "next/image";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 export interface Filiere {
   id: number;
@@ -43,6 +45,15 @@ const columns = [
 
 const FiliereListPage = () => {
   const [filiere, setFiliere] = useState<Filiere[]>([]);
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    let token = cookies.get("authToken");
+    if (!token) {
+      redirect("/sign-in");
+    }
+    console.log("token", token);
+  }, []);
 
   useEffect(() => {
     const fetchFiliere = async () => {

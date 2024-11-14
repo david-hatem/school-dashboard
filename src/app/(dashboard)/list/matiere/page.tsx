@@ -47,15 +47,12 @@ const columns = [
 const MatiereListPage = () => {
   const cookies = new Cookies();
 
-  // let token = cookies.get("authToken");
   useEffect(() => {
-    if (!cookies.get("authToken")) {
+    let token = cookies.get("authToken");
+    if (!token) {
       redirect("/sign-in");
     }
-    console.log(cookies.get("authToken"));
-  }, []);
-  useEffect(() => {
-    console.log("params.id : ", params.id);
+    console.log("token", token);
   }, []);
   const [matiere, setMatiere] = useState<Matiere[]>([]);
 
