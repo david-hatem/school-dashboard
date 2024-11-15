@@ -115,7 +115,7 @@ const SingleStudentPage = ({ params }) => {
           <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               <Image
-                src="https://images.pexels.com/photos/5414817/pexels-photo-5414817.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src="/avatar.png"
                 alt=""
                 width={144}
                 height={144}
@@ -123,6 +123,8 @@ const SingleStudentPage = ({ params }) => {
               />
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
+            <div className="flex items-center gap-4">
+
               <h1 className="text-xl font-semibold">
                 {student?.prenom} {student?.nom}
               </h1>
@@ -134,6 +136,7 @@ const SingleStudentPage = ({ params }) => {
                   id={params.id}
                 />
               )}
+            </div>
               <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                 <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
                   <Image src="/blood.png" alt="" width={14} height={14} />

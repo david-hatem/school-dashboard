@@ -23,55 +23,47 @@ export interface Event {
   professeur: number;
 }
 
-// TEMPORARY
-const events = [
-  {
-    id: 1,
-    title: "Lorem ipsum dolor",
-    time: "12:00 PM - 2:00 PM",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 2,
-    title: "Lorem ipsum dolor",
-    time: "12:00 PM - 2:00 PM",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 3,
-    title: "Lorem ipsum dolor",
-    time: "12:00 PM - 2:00 PM",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-];
-
-export async function fetchEvents(): Promise<Event[]> {
+export async function fetchEvents(id): Promise<Event[]> {
   try {
-    const response = await axios.get<Event[]>(
-      "http://167.114.0.177:81/events",
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
+    if(id === null) {
+      const response = await axios.get<Event[]>(
+        "http://167.114.0.177:81/events",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } else {
+      const response = await axios.get<Event[]>(
+        `http://167.114.0.177:81/events/?professeur=${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    }
   } catch (error) {
     console.error("Error fetching events:", error);
     throw error;
   }
 }
 
-const EventCalendar = () => {
+const EventCalendar = ({id}) => {
   const [value, onChange] = useState<Value>(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+
+
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const data = await fetchEvents();
+        const data = await fetchEvents(id);
         setEvents(data);
       } catch (error) {
         setError("Failed to load events");
