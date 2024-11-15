@@ -1,6 +1,6 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useEffect, useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,6 +21,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import { Theme, useTheme } from "@mui/material/styles";
 import { Etudiant } from "@/app/(dashboard)/list/students/page";
+import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -67,28 +69,71 @@ const PaymentForm = ({
     []
   );
 
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handlePrintContent = () => {
+    const printContent = contentRef.current;
+    if (!printContent) return;
+
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContent.innerHTML;
+
+    window.print();
+
+    document.body.innerHTML = originalContents;
+    window.location.reload();
+  };
+  const [printData, setPrintData] = useState({});
+  const [open, setOpen] = useState(false);
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const onSubmit = handleSubmit(async (data) => {
-    const response = await axios.post(
-      "http://167.114.0.177:81/paiements/create/",
-      {
-        montant: data?.montant,
-        statut_paiement: data?.statut_paiement,
-        commission_percentage: data?.commission_percentage,
-        groupe_id: data?.groupe_id,
-        etudiant_id: data?.etudiant_id,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json", // Define content type as JSON
+    try {
+      const response = await axios.post(
+        "http://167.114.0.177:81/paiements/create/",
+        {
+          montant: data?.montant,
+          statut_paiement: data?.statut_paiement,
+          commission_percentage: data?.commission_percentage,
+          groupe_id: data?.groupe_id,
+          etudiant_id: data?.etudiant_id,
         },
+        {
+          headers: {
+            "Content-Type": "application/json", // Define content type as JSON
+          },
+        }
+      );
+      if (response.status === 201) {
+        setIsPrint(true);
+        toast.success("Payment create successfully");
+        console.log(response.status);
+      } else {
+        toast.error(response?.non_field_errors[0]);
       }
-    );
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error(error?.response?.data?.non_field_errors[0]);
+      }
+    }
     // );
+    setPrintData(data);
     console.log(data);
   });
 
   const [etudiant, setEtudiant] = useState<Etudiant[]>([]);
   const [groupe, setGroupe] = useState<Groupe[]>([]);
+  const [isPrint, setIsPrint] = useState(false);
 
   useEffect(() => {
     const fetchGroupe = async () => {
@@ -117,6 +162,23 @@ const PaymentForm = ({
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
+      <div ref={contentRef} className="hidden">
+        <p>Montant : {printData?.montant}</p>
+        <p>Commission Percentage : {printData?.commission_percentage}</p>
+        <p>Statut Paiement : {printData?.statut_paiement}</p>
+        <p>Groupe Id : {printData?.groupe_id}</p>
+        <p>Etudiant Id : {printData?.etudiant_id}</p>
+      </div>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          This is a success Alert inside a Snackbar!
+        </Alert>
+      </Snackbar>
       <h1 className="text-xl font-semibold">
         {type === "create" ? "Create a new payment" : "Update payment"}
       </h1>
@@ -202,6 +264,14 @@ const PaymentForm = ({
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Create" : "Update"}
       </button>
+      {isPrint && (
+        <button
+          onClick={handlePrintContent}
+          className="bg-blue-400 text-white p-2 rounded-md"
+        >
+          print
+        </button>
+      )}
     </form>
   );
 };
