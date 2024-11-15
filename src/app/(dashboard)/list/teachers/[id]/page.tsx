@@ -234,7 +234,7 @@ const SingleTeacherPage = ({ params }) => {
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
         <div className="bg-white p-4 rounded-md">
-        <EventCalendar id={params.id} />
+          <EventCalendar id={params.id} />
         </div>
       </div>
     </div>

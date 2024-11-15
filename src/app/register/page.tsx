@@ -3,8 +3,19 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "universal-cookie";
+import { redirect } from "next/navigation";
 
 const LoginPage = () => {
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    let token = cookies.get("authToken");
+    if (!token) {
+      redirect("/sign-in");
+    }
+    console.log("token", token);
+  }, []);
   // const { isLoaded, isSignedIn, user } = useUser();
 
   const [username, setUsername] = useState("");
@@ -25,6 +36,8 @@ const LoginPage = () => {
   // }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    let accessToken;
+    accessToken = cookies.get("authToken");
     e.preventDefault();
     setError(null);
 
@@ -32,11 +45,12 @@ const LoginPage = () => {
       const response = await fetch("http://167.114.0.177:81/staff/register/", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: username,
-          password :password,
+          password: password,
           password2: passwordCon,
           email: email,
           first_name: firstName,
@@ -49,10 +63,11 @@ const LoginPage = () => {
       }
 
       const data = await response.json();
-      const token = data["access"];
+      // const token = data["access"];
 
-      // Save token to local storage (or handle as needed)
-      localStorage.setItem("authToken", token);
+      // // Save token to local storage (or handle as needed)
+      // localStorage.setItem("authToken", token);
+
 
       // Redirect to the desired page
       router.push("/");
