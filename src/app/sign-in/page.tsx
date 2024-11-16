@@ -28,8 +28,9 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://167.114.0.177:81/token/", {
+      const response = await fetch("http://167.114.0.177:81/token", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
