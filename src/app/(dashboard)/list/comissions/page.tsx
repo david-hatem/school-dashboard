@@ -112,7 +112,55 @@ const columns = [
 ];
 
 const AssignmentListPage = () => {
+  const [etudiant, setEtudiant] = useState<Etudiant[]>([]);
+  const [groupe, setGroupe] = useState<Groupe[]>([]);
+  const [professeur, setProfesseur] = useState<Professeur[]>([]);
+  const [filters, setFilters] = useState({
+    montant: "",
+    statut_comission: "",
+    professeur: "",
+    etudiant: "",
+    groupe: "",
+    start_date: "",
+    end_date: "",
+  });
   const cookies = new Cookies();
+
+  useEffect(() => {
+    const fetchGroupe = async () => {
+      const response = await fetch("http://167.114.0.177:81/groupe_list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setGroupe(data);
+    };
+    const fetchEtudiant = async () => {
+      const response = await fetch("http://167.114.0.177:81/etudiant_list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setEtudiant(data);
+    };
+    const fetchProfesseur = async () => {
+      const response = await fetch("http://167.114.0.177:81/professeur_list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setProfesseur(data);
+    };
+    fetchGroupe();
+    fetchEtudiant();
+    fetchProfesseur();
+  }, []);
 
   useEffect(() => {
     let token = cookies.get("authToken");
@@ -122,21 +170,30 @@ const AssignmentListPage = () => {
     console.log("token", token);
   }, []);
   const [comissions, setComissions] = useState<Comission[]>([]);
-
+  // Handle form changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
   useEffect(() => {
+    const query = new URLSearchParams(filters).toString();
+
     const fetchComission = async () => {
-      const response = await fetch("http://167.114.0.177:81/commissions", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://167.114.0.177:81/commissions/?${query}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await response.json();
       setComissions(data?.results);
     };
 
     fetchComission();
-  }, []);
+  }, [filters]);
   const renderRow = (item: Comission) => (
     <tr
       key={item.id}
@@ -191,6 +248,76 @@ const AssignmentListPage = () => {
         </div>
       </div>
       {/* LIST */}
+      <div className="flex gap-3 my-2">
+        <input
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
+          type="number"
+          name="montant"
+          placeholder="Montant"
+          value={filters.montant}
+          onChange={handleChange}
+        />
+        <input
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
+          type="text"
+          name="statut_comission"
+          placeholder="Statut Comission"
+          value={filters.statut_comission}
+          onChange={handleChange}
+        />
+        <input
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
+          type="date"
+          name="start_date"
+          value={filters.start_date}
+          onChange={handleChange}
+        />
+        <input
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
+          type="date"
+          name="end_date"
+          value={filters.end_date}
+          onChange={handleChange}
+        />
+        <select
+          name="groupe"
+          value={filters.groupe}
+          onChange={handleChange}
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+        >
+          {groupe.map((g) => {
+            return <option value={g?.id}>{g?.nom_groupe}</option>;
+          })}
+        </select>
+        <select
+          name="etudiant"
+          value={filters.etudiant}
+          onChange={handleChange}
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+        >
+          {etudiant.map((e) => {
+            return (
+              <option value={e?.id}>
+                {e?.prenom} {e?.nom}
+              </option>
+            );
+          })}
+        </select>
+        <select
+          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+          name="professeur"
+          value={filters.professeur}
+          onChange={handleChange}
+        >
+          {professeur.map((p) => {
+            return (
+              <option value={p?.id}>
+                {p?.prenom} {p?.nom}
+              </option>
+            );
+          })}
+        </select>
+      </div>
       <Table columns={columns} renderRow={renderRow} data={comissions} />
       {/* PAGINATION */}
       <Pagination />
