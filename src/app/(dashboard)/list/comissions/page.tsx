@@ -249,7 +249,7 @@ const AssignmentListPage = () => {
       </div>
       {/* LIST */}
       <div className="flex gap-3 my-4">
-      {/* <label className="text-xs text-gray-500">Montant</label> */}
+        {/* <label className="text-xs text-gray-500">Montant</label> */}
         <input
           className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm"
           type="number"
@@ -286,7 +286,9 @@ const AssignmentListPage = () => {
           onChange={handleChange}
           className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
         >
-          <option value="" disabled="disabled">Select Groupe</option>
+          <option value="" disabled="disabled">
+            Select Groupe
+          </option>
           {groupe.map((g) => {
             return <option value={g?.id}>{g?.nom_groupe}</option>;
           })}
@@ -297,7 +299,9 @@ const AssignmentListPage = () => {
           onChange={handleChange}
           className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
         >
-          <option value="" disabled="disabled">Select Etudiant</option>
+          <option value="" disabled="disabled">
+            Select Etudiant
+          </option>
           {etudiant.map((e) => {
             return (
               <option value={e?.id}>
@@ -312,7 +316,9 @@ const AssignmentListPage = () => {
           value={filters.professeur}
           onChange={handleChange}
         >
-          <option value="" disabled="disabled">Select Professeur</option>
+          <option value="" disabled="disabled">
+            Select Professeur
+          </option>
           {professeur.map((p) => {
             return (
               <option value={p?.id}>
